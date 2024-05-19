@@ -16,10 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -27,19 +23,21 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nandaiqbalh.counterapp.ui.theme.CounterAppTheme
 
 class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContent {
+			val viewModel: CounterViewModel = viewModel()
 			CounterAppTheme {
 				// A surface container using the 'background' color from the theme
 				Surface(
 					modifier = Modifier.fillMaxSize(),
 					color = MaterialTheme.colorScheme.background
 				) {
-					CounterApp()
+					CounterApp(viewModel)
 				}
 			}
 		}
@@ -47,16 +45,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CounterApp() {
-	var count by remember { mutableStateOf(0) }
-
-	fun increment() {
-		count++
-	}
-
-	fun decrement() {
-		count--
-	}
+fun CounterApp(viewModel: CounterViewModel) {
 
 	Column(
 		modifier = Modifier
@@ -66,7 +55,7 @@ fun CounterApp() {
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
 		Text(
-			text = "Count: $count",
+			text = "Count: ${viewModel.count.value}",
 			fontSize = 24.sp,
 			fontWeight = FontWeight.Bold,
 			style = TextStyle(fontFamily = FontFamily.SansSerif)
@@ -81,11 +70,11 @@ fun CounterApp() {
 			horizontalArrangement = Arrangement.SpaceBetween
 		) {
 
-			Button(onClick = { increment() }) {
+			Button(onClick = { viewModel.increment() }) {
 				Text(text = "Increase")
 			}
 
-			Button(onClick = { decrement() }) {
+			Button(onClick = { viewModel.decrement() }) {
 				Text(text = "Decrease")
 			}
 
